@@ -13,8 +13,9 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
+.App-header,
+.App-body {
+  background-color: white;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -32,7 +33,65 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+.pagination {
+  display: flex;
+  flex-direction: row;
+}
+
+.page-item {
+  margin: 10px;
+  display: flex;
+}
+
+.ascending {
+  color: green;
+}
+
+.descending {
+  color: red;
+}
+
+table {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  text-align: left;
+  border-collapse: separate;
+  border-spacing: 5px;
+  background: #ECE9E0;
+  color: #656665;
+  border: 16px solid #ECE9E0;
+  border-radius: 20px;
+}
+
+/* .table {
+  background-color: black;
+} */
+
+th {
+  font-size: 18px;
+  padding: 10px;
+}
+
+td {
+  background: #F5D7BF;
+  padding: 10px;
+}
+
+.MuiButton-label {
+  color: gray
+}
+
+.mask {
+  margin-top: 16px
+}
+
+.spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
