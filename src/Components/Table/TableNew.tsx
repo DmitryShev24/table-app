@@ -14,6 +14,7 @@ interface responseData {
     zip: string
   },
   description: string
+  order: number
 }
 
 export function TableNew(props: any) {
@@ -25,6 +26,7 @@ export function TableNew(props: any) {
   const [postsPerPage] = useState(50);
   const [selectRow, setSelectRow] = useState<responseData>();
   const [q, setQ] = useState("");
+  const [currentRow, setCurrentRow] = useState<any>();
 
   //фильтрация
 
@@ -34,6 +36,9 @@ export function TableNew(props: any) {
       items.filter((item) => {
         return item.firstName.toLowerCase().startsWith(e.toLowerCase());
       });
+    filtered.map((e, idx) => {
+      e.push({order: idx})
+    })
     setFilteredData(filtered);
   };
 
@@ -96,6 +101,58 @@ export function TableNew(props: any) {
     )
   }
 
+  function dragStartHandler(e: React.DragEvent<HTMLTableRowElement>, item: responseData): void {
+
+    console.log('drag', item)
+    setCurrentRow(item);
+  }
+
+
+  function dragLeaveHandler(e: React.DragEvent<HTMLTableRowElement>): void {
+    //throw new Error("Function not implemented.");
+  }
+
+
+  function dragEndHandler(e: React.DragEvent<HTMLTableRowElement>): void {
+    e.target as HTMLDivElement
+    //throw new Error("Function not implemented.");
+    //e.target.style.background = "white";
+  }
+
+
+  function dragOverHandler(e: React.DragEvent<HTMLTableRowElement>): void {
+    e.preventDefault();
+    //e.target.style.background = "lightgray";
+    //throw new Error("Function not implemented.");
+  }
+
+  function dropHandler(e: React.DragEvent<HTMLTableRowElement>, item: responseData): void {
+    //throw new Error("Function not implemented.");
+    e.preventDefault();
+    console.log('wewer', items)
+
+    items.map((c: {id: number | undefined;}) => {
+      if (c.id === item.id) {
+        return {...c, order: currentRow.order}
+      }
+      if (c.id === currentRow?.id) {
+        return {...c, order: item.order}
+      }
+      return c
+    })
+    setCurrentRow(items);
+    console.log('drop', item)
+  }
+
+  const sortRows = (a: any, b: any) => {
+    console.log('tt', a)
+    if (a.order > b.order) {
+      return 1
+    } else {
+      return -1
+    }
+  }
+
   return (
     <>
       <input
@@ -121,8 +178,17 @@ export function TableNew(props: any) {
           </tr>
         </thead>
         <tbody>
-          {renderTableBody().map((item: responseData) => (
-            <tr key={`${item.id}+${item.firstName}`} onClick={() => setSelectRow(item)}>
+          {renderTableBody().sort(sortRows).map((item: responseData) => (
+            <tr
+              onDragStart={(e) => dragStartHandler(e, item)}
+              onDragLeave={(e) => dragLeaveHandler(e)}
+              onDragEnd={(e) => dragEndHandler(e)}
+              onDragOver={(e) => dragOverHandler(e)}
+              onDrop={(e) => dropHandler(e, item)}
+              draggable={true}
+              style={{cursor: "grab"}}
+              key={`${item.id}+${item.firstName}`}
+              onClick={() => setSelectRow(item)}>
               <td>{item.id}</td>
               <td>{item.firstName}</td>
               <td>{item.lastName}</td>
@@ -142,9 +208,9 @@ export function TableNew(props: any) {
 
 const useSortableData = (items: any, config = null,) => {
   const [sortConfig, setSortConfig] = React.useState<any>(config);
-
   const sortedItems = React.useMemo(() => {
-    let sortableItems = [...items];
+
+    let sortableItems = [...items.data];
     if (sortConfig !== null) {
       sortableItems.sort((a, b) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -156,6 +222,11 @@ const useSortableData = (items: any, config = null,) => {
         return 0;
       });
     }
+
+    // sortableItems.map((e, idx) => {
+    //   console.log('ssss', e)
+    //   e.push({order: idx})
+    // })
     return sortableItems;
   }, [items, sortConfig]);
 
@@ -167,5 +238,9 @@ const useSortableData = (items: any, config = null,) => {
     setSortConfig({key, direction});
   }
 
+
+
   return {items: sortedItems, requestSort, sortConfig};
 }
+
+

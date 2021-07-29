@@ -6,17 +6,13 @@ import reportWebVitals from './reportWebVitals';
 import {HomeWork} from './HomeWork';
 
 ReactDOM.render(
-  // <React.StrictMode>
-  //   {/* <App /> */}
-
-  // </React.StrictMode>,
-  <div>
-    {HomeWork()}
-  </div>,
+  <React.StrictMode>
+    <App />
+    {/* {
+      HomeWork() // ДЗ от 18.06.2021
+    } */}
+  </React.StrictMode>,
   document.getElementById('root')
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
